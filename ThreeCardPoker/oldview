@@ -1,0 +1,70 @@
+import PySimpleGUI as sg
+import numpy as np
+from controller.controller import Controller
+"""
+while True:
+    event, values = window.read()
+    if event == sg.WIN_CLOSED:
+            break
+    if event in ('Blue', 'Red'):
+        window['canvas'].TKCanvas.itemconfig(cir, fill=event)
+"""
+
+class View:
+    def __init__(self, seed='random', current_layout='menu', controller=Controller()) -> None:
+        if seed != 'random':
+            np.random.seed(seed)
+        sg.SetOptions(font='Arial Baltic', 20, border_width=1)
+        self._window = None
+        self.current_layout = current_layout
+        self.controller = controller
+    
+    def menu(self):
+        welcome_prompt = 'Welcome to Three Card Poker!'
+        menu_layout = [
+            [sg.Text(welcome_prompt, justification='center', font=('Cooper Black', 50), size=(19, 1))],
+            [sg.Frame(
+                layout=[[sg.Button('Start', bind_return_key=True, size=(15, 1)),
+                         sg.Button('Quit', size=(15, 1))]],
+                title='',
+                border_width=0
+            )]
+        ]    
+       
+        window = sg.Window(welcome_prompt, background_color='#006600', layout=menu_layout).Finalize()
+        self.curr_loc = window.CurrentLocation()
+        self.curr_size = window.Size()
+
+        while True:
+            event, values = window.Read()
+            if event == 'Start':
+                self.curr_loc = window.CurrentLocation()
+                self.curr_size = window.Size
+                window.Close()
+                self.current_layout = 'in game'
+            elif event == 'Quit':
+                self.curr_loc = window.CurrentLocation()
+                self.curr_size = window.Size
+                window.Close()
+                quit()
+        
+        
+
+    def in_game(self):
+
+
+    def game_over(self):
+        game_over_layout = []
+
+    
+
+    def display(self):
+        if self.curr == 'menu':
+            return View.menu()
+        
+        if self.current_layout == 'in game':
+            return View.in_game()
+        
+        if self.current_layout == 'game over':
+            return View.game_over()
+    
