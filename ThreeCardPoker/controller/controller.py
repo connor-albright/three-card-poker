@@ -2,12 +2,21 @@ from model.model import Model
 from view.view import View
 
 class Controller:
+    """Represents controller of the game."""
     def __init__(self, model=Model()) -> None:
+        """Constructs controller for the given model.
+        Args:
+            model (_type_): model that is controlled
+        """
         self.model = model
         self.view = View(model=self.model)
         self.ANTE = 25
         
     def start_round(self):
+        """Round start stage of the game. Updates model and view
+        Returns:
+            _type_: None or -1
+        """
         self.model.winner = None
         self.model.round_over = False
         self.model.game_over = False
@@ -42,6 +51,10 @@ class Controller:
         self.model.deal_hands()
         
     def play_round(self):
+        """Betting stage of game. Updates model and view.
+        Returns:
+            _type_: None or -1
+        """
         self.view.curr_display = 'bet'
         self.view.display()
         event = ''
@@ -62,6 +75,7 @@ class Controller:
                 pass
         
     def end_round(self):
+        """Evauation stage of game. Updates model and view."""
         if self.model.compare_hands():
             self.model.user.money += self.model.get_pot()
         
@@ -70,15 +84,19 @@ class Controller:
         self.view.display()
         
     def go(self):
+        """Runs the game in a sequential order.
+        Returns:
+            _type_: self.go() or None.
+        """
         self.view.display()
         while True:  
-            event, value = self.get_events_values()          
+            event,_ = self.get_events_values()          
             if event == 'Quit':
                 break
             if event == 'Start' or event == 'Next Round' or event == 'Fold':        
                 if self.start_round() is not None:
                     self.gameover()
-                    event, value = self.get_events_values()          
+                    event,_ = self.get_events_values()          
                     if event == 'Quit':
                         return
                     elif event == 'Play Again':
@@ -92,18 +110,23 @@ class Controller:
                     continue
                 self.end_round()
 
-    
     def gameover(self):
+        """Calls the gameover display if conditions are met."""
         self.view.curr_display = 'gameover'
         self.view.display()
     
     def query_pair_plus(self):
+        """Updates view to the prebet display."""
         self.view.curr_display = 'prebet'
         self.view.display()
 
     def query_bet(self):
+        """Updates ciew to bet display."""
         self.view.curr_display = 'bet'
         self.view.display()
         
     def get_events_values(self):
+        """Retrieves the events and values given from the view
+        Returns:
+            events, values: value changes and events triggered in the view"""
         return self.view.get_events_values()
