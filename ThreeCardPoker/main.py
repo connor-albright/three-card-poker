@@ -3,4 +3,4 @@ from controller.controller import Controller
 model = Model()
 controller = Controller(model=model)
 
-controller.go()
+controller.go() #Runs game
