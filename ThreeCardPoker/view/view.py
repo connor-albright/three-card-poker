@@ -1,4 +1,3 @@
-from io import UnsupportedOperation
 import PySimpleGUI as sg
 
 from model.model import Model
