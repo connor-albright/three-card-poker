@@ -23,14 +23,29 @@ class Model:
         self.winner = None
         
     def place_pair_plus(self, amount):
+        """Places pair plus bet in the game.
+        Args:
+            amount (float): amount to be placed as bet, goes through place_bet().
+        """
         self.user.place_bet(amount=amount)
         self.pair_plus = amount
     
     def place_bet(self, amount):
+        """General bet placing function to add amount to pot and interact with user's place bet function.
+        Args:
+            amount (float): amount to be added and used for user.place_bet().
+        """
         self.user.place_bet(amount=amount)
         self.pot += amount
 
     def get_pair_plus(self):
+        """Assesses user's hand to see if the hand contains a pair, flush, straight,
+        three of a kind, or straight flush where the user is awarded the appropriete
+        amount based on this evaluation.
+        Returns:
+            new_amount(float): updates the amount the user will win based on the pair-plus
+            bet. 
+        """
         hand_type = self.user.evaluate_hand()[0]
         new_amount = 0.0
         if hand_type == HandType.STRAIGHT_FLUSH:
@@ -53,9 +68,13 @@ class Model:
         return new_amount
              
     def fold(self):
+        """Alters round_over flag to update the view and cause the game to revert back to
+        the pair-plus bet."""
         self.round_over = True
     
     def deal_hands(self):
+        """Deals the hands of both the user and dealer where both get 3 cards with
+        user's cards faced up and dealer's cards faced down."""
         self.user.set_hand(self.deck.get_n_cards(n=3, face_up=True))
         self.dealer.set_hand(self.deck.get_n_cards(n=3, face_up=False))
     
@@ -64,7 +83,8 @@ class Model:
         by first using the handtype of the hand and if the same, compares highcard to determine
         the winner.
         Returns:
-            self.winner: winner of the round to be used in controller
+            self.winner(flag): winner of the round to be used in controller, if true, the user wins, if not,
+            dealer wins and no money from the play-wager is awarded.
         """
         user_hand = self.user.evaluate_hand()
         dealer_hand = self.dealer.evaluate_hand()
@@ -77,7 +97,12 @@ class Model:
             return self.winner
         
     def get_pot(self):
+        """Retrieves the amount that was placed as a bet throughout the round.
+        Returns:
+            self.pot (int): Accumulation of money in the round that was betted.
+        """
         return self.pot
     
     def get_cards_on_table(self):
+        """Used to get cards that were dealt on the table in view."""
         return self.user.hand, self.dealer.hand
